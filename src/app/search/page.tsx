@@ -17,7 +17,6 @@ type HitProps = {
 function Hit({ hit }: HitProps) {
   const date = new Date(hit.post_date);
   return (
-
     <article className="my-4">
       <h2 className="text-xl font-semibold"><Highlight attribute="post_title" hit={hit} /></h2>
       <p><small className="italic">{date.toDateString()}</small></p>
@@ -25,7 +24,6 @@ function Hit({ hit }: HitProps) {
         <Highlight attribute="content" hit={hit} />
       </p>
     </article>
-
   );
 }
 function CustomStats() {
@@ -71,6 +69,5 @@ export default function SeachPage() {
         />
       </InstantSearch>
     </main>
-
   )
 }

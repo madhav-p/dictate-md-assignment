@@ -1,6 +1,5 @@
 export default function AddNewPost() {
   return (
-
     <main className="mx-auto w-full max-w-2xl mb-8">
       <h1 className="text-4xl font-bold py-8">Create new Post</h1>
       <form action="" className="flex flex-col gap-4 px-4 min-w-full">
