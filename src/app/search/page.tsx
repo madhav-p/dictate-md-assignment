@@ -1,14 +1,20 @@
 "use client"
 
-import { useState } from "react"
-
+import { Hit as AlgoliaHit } from 'instantsearch.js';
 import React from 'react';
 import algoliasearch from 'algoliasearch/lite';
-import { Configure, Highlight, Hits, InstantSearch, SearchBox, Stats, useStats } from 'react-instantsearch-hooks-web';
+import { Configure, Highlight, Hits, InstantSearch, SearchBox, useStats } from 'react-instantsearch-hooks-web';
 
 const searchClient = algoliasearch('0B0ENPP4DM', '55d88339136f5110f22271e618aa9eb6');
 
-function Hit({ hit }) {
+type HitProps = {
+  hit: AlgoliaHit<{
+    post_title: string;
+    post_date: number;
+    content: string;
+  }>;
+};
+function Hit({ hit }: HitProps) {
   const date = new Date(hit.post_date);
   return (
 
@@ -24,14 +30,8 @@ function Hit({ hit }) {
 }
 function CustomStats() {
   const {
-    hitsPerPage,
     nbHits,
-    areHitsSorted,
-    nbSortedHits,
-    nbPages,
-    page,
     processingTimeMS,
-    query,
   } = useStats();
 
   return <p className="my-6 ">
@@ -46,60 +46,30 @@ export default function SeachPage() {
       <InstantSearch searchClient={searchClient} indexName="posts" >
         <Configure
           analytics={false}
-          // filters="free_shipping:true"
           distinct={true}
           hitsPerPage={5}
         />
-
         <SearchBox
-          // Optional props
-          // placeholder={string}
-          // queryHook={function}
           searchAsYouType={false}
           autoFocus={true}
-          // onSubmit={function}
           submitIconComponent={() => "Search"}
           resetIconComponent={() => null}
-          // loadingIconComponent={() => JSX.Element}
           classNames={{
             submit: "bg-blue-700 py-2 px-8 rounded-md text-white",
             input: "border-gray-800 rounded-sm p-2 border-2 w-[300px]",
             submitIcon: "text-white",
             form: "flex items-center justify-start gap-4 "
           }}
-        // translations={object}
-        // ...props={ComponentProps<'div'>}
         />
         <CustomStats />
-
         <Hits
-          // Optional props
           hitComponent={Hit}
           classNames={{
             list: "flex flex-col divide-y-2",
             item: "border-gray-400"
           }}
-        // ...props={ComponentProps<'div'>}
         />
       </InstantSearch>
-      {/* <form className="flex items-center justify-start gap-4 ">
-        <input type="search" name="query" id="" style={{
-          width: "300px"
-        }} className="border-gray-800 rounded-sm p-2 border-2 " />
-        <button name="action" className="bg-blue-700 py-2 px-8 rounded-md text-white"
-          value="search">Search</button>
-      </form> */}
-      {/* <ul className=" flex flex-col divide-y-2 ">
-        {searchHits.map((e, i) => (<li key={i} className="border-gray-400">
-          <article className="my-2 ">
-            <h2 className="text-xl font-semibold">Title</h2>
-            <p><small className="italic">Oct 09, 2018</small></p>
-            <p className="line-clamp-3 overflow-hidden text-ellipsis">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus, at veritatis? Molestias numquam quia commodi odio. At laudantium repellendus labore molestiae ipsum. Minima eos nesciunt quisquam praesentium consectetur, ad sapiente!
-            </p>
-          </article>
-        </li>))}
-      </ul> */}
     </main>
 
   )
