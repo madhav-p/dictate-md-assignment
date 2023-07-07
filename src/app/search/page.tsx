@@ -30,18 +30,43 @@ function CustomStats() {
   const {
     nbHits,
     processingTimeMS,
+    query
   } = useStats();
 
-  return <p className="my-6 ">
+  return query !== '' ? (<p className="my-6 ">
     <b>{nbHits} posts</b> were found in {processingTimeMS} ms.
-  </p>;
+  </p>) : null;
 }
 export default function SeachPage() {
 
   return (
     <main className="max-w-2xl p-8 m-auto">
       <h1 className="text-4xl font-bold my-8">Search</h1>
-      <InstantSearch searchClient={searchClient} indexName="posts" >
+      <InstantSearch
+        searchClient={{
+          ...searchClient,
+          search(requests) {
+            if (requests.every(({ params }) => !params!.query)) {
+              // Here we have to do something else
+              return Promise.resolve({
+                results: requests.map(() => ({
+                  hits: [],
+                  nbHits: 0,
+                  nbPages: 0,
+                  page: 0,
+                  processingTimeMS: 0,
+                  hitsPerPage: 0,
+                  exhaustiveNbHits: false,
+                  query: '',
+                  params: '',
+                })),
+              });
+            }
+            return searchClient.search(requests);
+          }
+        }}
+        indexName="posts"
+      >
         <Configure
           analytics={false}
           distinct={true}
